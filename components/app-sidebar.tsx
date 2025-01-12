@@ -14,12 +14,13 @@ import Image from "next/image"
 import logoCocagne from "@/public/images/cocagne-vert.png"
 import { Separator } from "@/components/ui/separator"
 import { Truck, Calendar} from "lucide-react"
+import Link from "next/link"
 
 export function AppSidebar() {
     const sidebarItems = [
         {
             title: "Tournées",
-            url: "#",
+            url: "/tournees",
             icon: Truck
         },
         {
@@ -45,10 +46,10 @@ export function AppSidebar() {
                     {sidebarItems.map((item) => (
                         <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton asChild>
-                            <a href={item.url}>
-                            <item.icon />
-                            <span>{item.title}</span>
-                            </a>
+                            <Link href={item.url}>
+                                <item.icon />
+                                <span>{item.title}</span>
+                            </Link>
                         </SidebarMenuButton>
                         </SidebarMenuItem>
                     ))}

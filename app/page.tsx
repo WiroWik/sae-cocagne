@@ -18,10 +18,9 @@ export default async function Home() {
         </CardHeader>
         <CardContent>
           <Table>
-            <TableCaption>A list of your recent invoices.</TableCaption>
+            <TableCaption>Utilisateurs</TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[100px]">Invoice</TableHead>
                 <TableHead>ID</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
@@ -38,9 +37,6 @@ export default async function Home() {
             </TableBody>
           </Table>
         </CardContent>
-        <CardFooter>
-          <p>Card Footer</p>
-        </CardFooter>
       </Card>
     </>
   );

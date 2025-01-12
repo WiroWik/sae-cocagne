@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/app-sidebar"
+import { cookies } from "next/headers";
 
 
 const geistSans = localFont({
@@ -19,17 +22,23 @@ export const metadata: Metadata = {
   description: "Projet pour iutsd",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="fr">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <SidebarProvider defaultOpen={true}>
+          <AppSidebar />
+            <main>
+              <SidebarTrigger />
+              {children}
+            </main>
+        </SidebarProvider>
       </body>
     </html>
   );

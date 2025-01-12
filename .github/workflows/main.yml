@@ -1,0 +1,36 @@
+name: Next.js CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # La branche principale pour les déploiements
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout du code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Configuration de Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18  # Ou la version que vous utilisez pour votre projet
+          cache: 'npm'
+
+      # 3. Installation des dépendances
+      - name: Install dependencies
+        run: npm install
+      # 4. Linting
+      - name: Linting
+        run: npm lint
+
+      # 5. Construction de l'application Next.js
+      - name: Build Next.js app
+        run: npm run build

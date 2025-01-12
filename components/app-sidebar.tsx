@@ -25,17 +25,19 @@ export function AppSidebar() {
         },
         {
             title: "Calendriers de livraison",
-            url: "#",
+            url: "/calendrier",
             icon: Calendar
         }
     ]
     return (
       <Sidebar>
         <SidebarHeader>
-            <div className="flex flex-row gap-2 items-center">
-                <Image src={logoCocagne} alt={"Réseau Cocagne"} width={80} height={80}></Image>
-                Réseau Cocagne
-            </div>
+            <Link href="/">
+                <div className="flex flex-row gap-2 items-center">
+                    <Image src={logoCocagne} alt={"Réseau Cocagne"} width={80} height={80}></Image>
+                    Réseau Cocagne
+                </div>
+            </Link>
         </SidebarHeader>
         <Separator />
         <SidebarContent>

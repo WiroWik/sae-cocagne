@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  web:
+    image: node:alpine
+    container_name: sae_cocagne_web
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    command: sh -c "npm install && npm run dev"
+  db:
+    image: postgres:latest
+    container_name: sae_cocagne_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:

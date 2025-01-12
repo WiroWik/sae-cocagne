@@ -3,6 +3,6 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <Image src={logoCocagne} alt={"Réseau Cocagne"}></Image>
+    <h1 className="text-3xl font-bold underline">SAE 5 : Jardin de Cocagne</h1>
   );
 }

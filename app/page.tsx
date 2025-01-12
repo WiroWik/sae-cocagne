@@ -3,6 +3,8 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <h1 className="text-3xl font-bold underline">SAE 5 : Jardin de Cocagne</h1>
+    <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+      SAE 5 : Jardin de Cocagne
+    </h1>
   );
 }

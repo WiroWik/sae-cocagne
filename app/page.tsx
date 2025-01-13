@@ -23,7 +23,11 @@ export default async function Home() {
               <TableRow>
                 <TableHead>ID</TableHead>
                 <TableHead>Name</TableHead>
+                <TableHead>Surname</TableHead>
                 <TableHead>Email</TableHead>
+                <TableHead>Phone number</TableHead>
+                <TableHead>Bank details</TableHead>
+                <TableHead>Password</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

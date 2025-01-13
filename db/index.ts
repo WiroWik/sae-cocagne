@@ -12,6 +12,7 @@ async function main() {
     surname: '1',
     email: 'user1@cocagne.com',
     phoneNumber: '0606060606',
+    bankDetails: 'FR7630004000031234567890143',
     password: bcrypt.hashSync('password', 10),
   };
 

@@ -20,6 +20,7 @@ export function RoundListTable({ round }: RoundListTableProps) {
                     <TableHead>ID</TableHead>
                     <TableHead>Jour de préparation</TableHead>
                     <TableHead>Jour de livraison</TableHead>
+                    <TableHead>Points de livraison</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>

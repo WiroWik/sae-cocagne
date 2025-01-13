@@ -1,5 +1,5 @@
 import { timestamp } from "drizzle-orm/pg-core";
-import { integer, pgTable, varchar } from "drizzle-orm/pg-core";
+import { integer, pgTable, varchar, foreignKey } from "drizzle-orm/pg-core";
 
 export const usersTable = pgTable("users", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -29,7 +29,7 @@ export const roundsTable = pgTable("rounds", {
 
 export const roundDepotsTable = pgTable("round_depots", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  roundId: integer().notNull().references(() => roundsTable.id),
-  depotId: integer().notNull().references(() => depotPointsTable.id),
+  roundId: integer().notNull().references(() => roundsTable.id, {onDelete: 'cascade'}),
+  depotId: integer().notNull().references(() => depotPointsTable.id, {onDelete: 'cascade'}),
   order: integer().notNull(),
 });

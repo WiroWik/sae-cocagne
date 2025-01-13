@@ -20,3 +20,16 @@ export const depotPointsTable = pgTable("depot_points", {
   openTime: timestamp().notNull(),
   closeTime: timestamp().notNull(),
 });
+
+export const roundsTable = pgTable("rounds", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  preparationDay: timestamp().notNull(),
+  deliveryDay: timestamp().notNull(),
+});
+
+export const roundDepotsTable = pgTable("round_depots", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  roundId: integer().notNull().references(() => roundsTable.id),
+  depotId: integer().notNull().references(() => depotPointsTable.id),
+  order: integer().notNull(),
+});

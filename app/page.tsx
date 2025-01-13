@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -21,6 +22,7 @@ export default async function Home() {
             <TableCaption>Utilisateurs</TableCaption>
             <TableHeader>
               <TableRow>
+                <TableHead></TableHead>
                 <TableHead>ID</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Surname</TableHead>
@@ -33,6 +35,7 @@ export default async function Home() {
             <TableBody>
               {user.map((u) => (
                 <TableRow key={u.id}>
+                  <TableCell><Badge>{u.role}</Badge></TableCell>
                   <TableCell>{u.id}</TableCell>
                   <TableCell>{u.name}</TableCell>
                   <TableCell>{u.surname}</TableCell>

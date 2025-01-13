@@ -14,6 +14,7 @@ async function main() {
     phoneNumber: '0606060606',
     bankDetails: 'FR7630004000031234567890143',
     password: bcrypt.hashSync('password', 10),
+    role: 'user',
   };
 
   await db.insert(usersTable).values(user);

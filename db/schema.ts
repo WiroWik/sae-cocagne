@@ -8,4 +8,5 @@ export const usersTable = pgTable("users", {
   phoneNumber: varchar({ length: 255 }).notNull().unique(),
   bankDetails: varchar({ length: 255 }).notNull(),
   password: varchar({ length: 255 }).notNull(),
+  role: varchar({ length: 255 }).notNull(),
 });

@@ -61,7 +61,6 @@ export default async function Home() {
                 <TableCaption>Points de dépôt</TableCaption>
                 <TableHeader>
                   <TableRow>
-                    <TableHead></TableHead>
                     <TableHead>ID</TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Adress</TableHead>

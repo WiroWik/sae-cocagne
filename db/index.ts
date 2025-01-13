@@ -6,6 +6,13 @@ import bcrypt from 'bcrypt';
 const db = drizzle(process.env.DATABASE_URL!);
 
 async function main() {
+
+  await db.delete(usersTable).execute();
+  await db.delete(depotPointsTable).execute();
+  console.log('All tables have been reset!');
+
+  await db.$client.query('ALTER SEQUENCE users_id_seq RESTART WITH 1');
+  await db.$client.query('ALTER SEQUENCE depot_points_id_seq RESTART WITH 1');
   
   const user: typeof usersTable.$inferInsert = {
     name: 'Utilisateur',
@@ -26,8 +33,12 @@ async function main() {
   };
 
   await db.insert(usersTable).values(user);
+  console.log('New user created!')
 
   await db.insert(depotPointsTable).values(depotPoint);
+  console.log('New depot point created!')
+
+
   /*
   const users: {
     id: number;

@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { usersTable } from '@/db/schema';
+import { depotPointsTable, usersTable } from '@/db/schema';
 import bcrypt from 'bcrypt';
   
 const db = drizzle(process.env.DATABASE_URL!);
@@ -17,11 +17,17 @@ async function main() {
     role: 'user',
   };
 
-  await db.insert(usersTable).values(user);
-  console.log('New user created!')
+  const depotPoint: typeof depotPointsTable.$inferInsert = {
+    name: 'Point de dépôt 1',
+    adress: '1 rue du dépôt',
+    contact: '0606060606',
+    openTime: new Date(),
+    closeTime: new Date(),
+  };
 
-  const users = await db.select().from(usersTable);
-  console.log('Getting all users from the database: ', users)
+  await db.insert(usersTable).values(user);
+
+  await db.insert(depotPointsTable).values(depotPoint);
   /*
   const users: {
     id: number;
@@ -35,6 +41,11 @@ async function main() {
 export async function getUser() {
     const result = await db.select().from(usersTable);
     return result
+}
+
+export async function getDepotPoint() {
+  const result = await db.select().from(depotPointsTable);
+  return result
 }
 
 main();

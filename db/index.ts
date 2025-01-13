@@ -1,13 +1,18 @@
 import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { usersTable } from '@/db/schema';
+import bcrypt from 'bcrypt';
   
 const db = drizzle(process.env.DATABASE_URL!);
 
 async function main() {
+  
   const user: typeof usersTable.$inferInsert = {
-    name: 'John',
-    email: 'john@example.com'
+    name: 'Utilisateur',
+    surname: '1',
+    email: 'user1@cocagne.com',
+    phoneNumber: '0606060606',
+    password: bcrypt.hashSync('password', 10),
   };
 
   await db.insert(usersTable).values(user);

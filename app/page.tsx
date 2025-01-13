@@ -31,7 +31,11 @@ export default async function Home() {
                 <TableRow key={u.id}>
                   <TableCell>{u.id}</TableCell>
                   <TableCell>{u.name}</TableCell>
+                  <TableCell>{u.surname}</TableCell>
                   <TableCell>{u.email}</TableCell>
+                  <TableCell>{u.phoneNumber}</TableCell>
+                  <TableCell>{u.bankDetails}</TableCell>
+                  <TableCell>{u.password}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

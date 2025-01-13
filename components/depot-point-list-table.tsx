@@ -14,7 +14,7 @@ export function DepotPointListTable({ depotPoint }: DepotPointListTableProps) {
                 <TableRow>
                 <TableHead>ID</TableHead>
                 <TableHead>Name</TableHead>
-                <TableHead>Adress</TableHead>
+                <TableHead>Coordinates</TableHead>
                 <TableHead>Contact</TableHead>
                 <TableHead>Open time</TableHead>
                 <TableHead>Close time</TableHead>
@@ -25,7 +25,7 @@ export function DepotPointListTable({ depotPoint }: DepotPointListTableProps) {
                 <TableRow key={dp.id}>
                     <TableCell>{dp.id}</TableCell>
                     <TableCell>{dp.name}</TableCell>
-                    <TableCell>{dp.adress}</TableCell>
+                    <TableCell>{dp.coordinates}</TableCell>
                     <TableCell>{dp.contact}</TableCell>
                     <TableCell>{dp.openTime.toString()}</TableCell>
                     <TableCell>{dp.closeTime.toString()}</TableCell>

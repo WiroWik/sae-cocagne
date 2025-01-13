@@ -14,7 +14,7 @@ export function RoundListTable({ round }: RoundListTableProps) {
 
     return (
         <Table>
-            <TableCaption>Points de dépôt</TableCaption>
+            <TableCaption>Tournées</TableCaption>
             <TableHeader>
                 <TableRow>
                     <TableHead>ID</TableHead>

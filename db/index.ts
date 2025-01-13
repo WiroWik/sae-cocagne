@@ -28,7 +28,7 @@ async function main() {
 
   const depotPoint: typeof depotPointsTable.$inferInsert = {
     name: 'Point de dépôt 1',
-    adress: '1 rue du dépôt',
+    coordinates: '{"lat": 48.8566, "lng": 2.3522}',
     contact: '0606060606',
     openTime: new Date(),
     closeTime: new Date(),
@@ -38,7 +38,7 @@ async function main() {
 
   const depotPoint2: typeof depotPointsTable.$inferInsert = {
     name: 'Point de dépôt 2',
-    adress: '2 rue du dépôt',
+    coordinates: '{"lat": 48.8566, "lng": 2.3522}',
     contact: '0606060606',
     openTime: new Date(),
     closeTime: new Date(),
@@ -48,7 +48,7 @@ async function main() {
 
   const depotPoint3: typeof depotPointsTable.$inferInsert = {
     name: 'Point de dépôt 3',
-    adress: '3 rue du dépôt',
+    coordinates: '{"lat": 48.8566, "lng": 2.3522}',
     contact: '0606060606',
     openTime: new Date(),
     closeTime: new Date(),

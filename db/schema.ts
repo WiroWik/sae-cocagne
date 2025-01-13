@@ -15,7 +15,7 @@ export const usersTable = pgTable("users", {
 export const depotPointsTable = pgTable("depot_points", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   name: varchar({ length: 255 }).notNull(),
-  adress: varchar({ length: 255 }).notNull(),
+  coordinates: varchar({ length: 255 }).notNull(),
   contact: varchar({ length: 255 }).notNull(),
   openTime: timestamp().notNull(),
   closeTime: timestamp().notNull(),

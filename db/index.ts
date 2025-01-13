@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { depotPointsTable, roundDepotsTable, roundsTable, usersTable } from '@/db/schema';
 import bcrypt from 'bcrypt';
+import { eq } from 'drizzle-orm';
   
 const db = drizzle(process.env.DATABASE_URL!);
 
@@ -96,12 +97,22 @@ async function main() {
 
 export async function getUser() {
     const result = await db.select().from(usersTable);
-    return result
+    return result;
 }
 
 export async function getDepotPoint() {
   const result = await db.select().from(depotPointsTable);
-  return result
+  return result;
+}
+
+export async function getRound() {
+  const result = await db.select().from(roundsTable);
+  return result;
+}
+
+export async function getRoundDepots(round_id: number) {
+  const result = await db.select().from(roundDepotsTable).where(eq(roundDepotsTable.roundId, round_id));
+  return result;
 }
 
 main();

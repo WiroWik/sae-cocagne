@@ -110,8 +110,8 @@ export async function getRound() {
   return result;
 }
 
-export async function getRoundDepots(round_id: number) {
-  const result = await db.select().from(roundDepotsTable).where(eq(roundDepotsTable.roundId, round_id));
+export async function getRoundDepots(id: number) {
+  const result = await db.select().from(roundDepotsTable).where(eq(roundDepotsTable.roundId, id));
   return result;
 }
 

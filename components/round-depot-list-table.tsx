@@ -16,7 +16,7 @@ export async function RoundDepotListTable({ roundId }: { roundId: number }) {
                 {roundDepot.map((rd) => (
                     <TableRow key={rd.id}>
                         <TableCell>{rd.order}</TableCell>
-                        <TableCell>{rd.id}</TableCell>
+                        <TableCell>{rd.depotId}</TableCell>
                     </TableRow>
                 ))}
             </TableBody>

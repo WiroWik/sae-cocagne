@@ -12,12 +12,6 @@ async function main() {
   await db.delete(roundsTable).execute();
   await db.delete(roundDepotsTable).execute();
   console.log('All tables have been reset!');
-
-  await db.$client.query('ALTER SEQUENCE users_id_seq RESTART WITH 1');
-  await db.$client.query('ALTER SEQUENCE depot_points_id_seq RESTART WITH 1');
-  await db.$client.query('ALTER SEQUENCE rounds_id_seq RESTART WITH 1');
-  await db.$client.query('ALTER SEQUENCE round_depots_id_seq RESTART WITH 1');
-  console.log('All sequences have been reset!');
   
   const user: typeof usersTable.$inferInsert = {
     name: 'Utilisateur',

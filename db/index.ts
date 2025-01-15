@@ -27,8 +27,8 @@ async function main() {
   console.log('New user created!')
 
   const depotPoint: typeof depotPointsTable.$inferInsert = {
-    name: 'Point de dépôt 1',
-    coordinates: '{"lat": 48.8566, "lng": 2.3522}',
+    name: 'IUT de Saint-Dié-des-Vosges',
+    coordinates: '{"lat": 48.29002481817756, "lng" : 6.94225075459547}',
     contact: '0606060606',
     openTime: new Date(),
     closeTime: new Date(),
@@ -37,8 +37,8 @@ async function main() {
   console.log('New depot point created!')
 
   const depotPoint2: typeof depotPointsTable.$inferInsert = {
-    name: 'Point de dépôt 2',
-    coordinates: '{"lat": 48.8566, "lng": 2.3522}',
+    name: 'Mairie de Saint-Dié-des-Vosges',
+    coordinates: '{"lat": 48.28745134155948, "lng": 6.947785895310519}',
     contact: '0606060606',
     openTime: new Date(),
     closeTime: new Date(),
@@ -47,8 +47,8 @@ async function main() {
   console.log('New depot point created!')
 
   const depotPoint3: typeof depotPointsTable.$inferInsert = {
-    name: 'Point de dépôt 3',
-    coordinates: '{"lat": 48.8566, "lng": 2.3522}',
+    name: 'Gare de Saint-Dié-des-Vosges',
+    coordinates: '{"lat": 48.28206086785984, "lng": 6.948560754595013}',
     contact: '0606060606',
     openTime: new Date(),
     closeTime: new Date(),

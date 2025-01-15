@@ -17,8 +17,22 @@ interface Depot {
     closeTime: Date;
 }
 
+interface Round {
+    id: number;
+    preparationDay: Date;
+    deliveryDay: Date;
+}
+
+interface RoundDepot {
+    id: number;
+    roundId: number;
+    depotId: number;
+    order: number;
+}
+
 interface MapProps {
     depots: Depot[];
+    rounds: Round[];
 }
 
 

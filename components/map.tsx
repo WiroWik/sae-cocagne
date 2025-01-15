@@ -7,6 +7,9 @@ import 'leaflet-defaulticon-compatibility';
 import 'leaflet/dist/leaflet.css';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { getDepotPoint } from "@/db";
+import 'leaflet-routing-machine';
+import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
+import RoutingMachine from "@/components/routing-machine";
 
 interface Depot {
     id: number;
@@ -36,7 +39,8 @@ interface MapProps {
 }
 
 
-export function Map({ depots }: MapProps) {
+export function Map({ depots, rounds }: MapProps) {
+
 
     return (
         <Card className="h-[500px] w-[500px] p-5">
@@ -45,6 +49,7 @@ export function Map({ depots }: MapProps) {
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
+                <RoutingMachine depots={depots} />
                 {depots.map((depot) => {
                     const coordinates = JSON.parse(depot.coordinates);
                     return (

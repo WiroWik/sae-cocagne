@@ -1,12 +1,13 @@
 import { Map } from "@/components/map";
 import { Separator } from "@/components/ui/separator";
-import { getDepotPoint } from "@/db";
+import { getDepotPoint, getRound } from "@/db";
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
 
 export default async function Tournees() {
 
     const depots = await getDepotPoint();
+    const rounds = await getRound();
 
     return (
         <>
@@ -14,7 +15,7 @@ export default async function Tournees() {
                 Tournées de livraison
             </h1>
             <Separator className="my-5" />
-            <Map depots={depots}/>
+            <Map depots={depots} rounds={rounds} />
 
 
 

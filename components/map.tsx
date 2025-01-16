@@ -1,4 +1,5 @@
 'use client'
+import React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css'; // Re-uses images from ~leaflet package
@@ -6,42 +7,20 @@ import L from 'leaflet';
 import 'leaflet-defaulticon-compatibility';
 import 'leaflet/dist/leaflet.css';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { getDepotPoint } from "@/db";
+import { getDepotPoint, getDepotPointByRoundId, getRoundDepots } from "@/db";
 import 'leaflet-routing-machine';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
 import RoutingMachine from "@/components/routing-machine";
-
-interface Depot {
-    id: number;
-    name: string;
-    coordinates: string;
-    contact: string;
-    openTime: Date;
-    closeTime: Date;
-}
-
-interface Round {
-    id: number;
-    preparationDay: Date;
-    deliveryDay: Date;
-}
-
-interface RoundDepot {
-    id: number;
-    roundId: number;
-    depotId: number;
-    order: number;
-}
+import { Depot } from "@/db/types/depot-point";
+import { Round } from "@/db/types/round";
 
 interface MapProps {
     depots: Depot[];
-    rounds: Round[];
 }
 
 
-export function Map({ depots, rounds }: MapProps) {
-
-
+export function Map({ depots}: MapProps) {
+    
     return (
         <Card className="h-[500px] w-[500px] p-5">
             <MapContainer style={{height: '100%', width: '100%'}} center={[48.28753557547101, 6.942228242470202]} zoom={13} scrollWheelZoom={true}>

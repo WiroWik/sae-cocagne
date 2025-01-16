@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { depotPointsTable, roundDepotsTable, roundsTable, usersTable } from '@/db/schema';
-import bcrypt from 'bcrypt';
 import { eq } from 'drizzle-orm';
 import { Round } from '@/db/types/round';
 import { RoundDepot } from '@/db/types/round-depot';
@@ -23,7 +22,7 @@ async function main() {
     email: 'user1@cocagne.com',
     phoneNumber: '0606060606',
     bankDetails: 'FR7630004000031234567890143',
-    password: bcrypt.hashSync('password', 10),
+    password: 'password',
     role: 'user',
   };
   await db.insert(usersTable).values(user);
@@ -172,6 +171,10 @@ export async function getRound() : Promise<Round[]> {
 export async function getRoundDepots(id: number) : Promise<RoundDepot[]> {
   const result = await db.select().from(roundDepotsTable).where(eq(roundDepotsTable.roundId, id));
   return result;
+}
+
+export function insertDepot(depot: typeof depotPointsTable.$inferInsert) {
+  return db.insert(depotPointsTable).values(depot);
 }
 
 main();

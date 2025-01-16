@@ -4,6 +4,7 @@ import { Depot } from "@/db/types/depot-point";
 import tt from "@tomtom-international/web-sdk-maps";
 import { useEffect, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
+import { insertDepot } from "@/db";
 
 interface MapProps {
     depots: Depot[];
@@ -16,6 +17,9 @@ export function Map({ depots }: MapProps) {
     const [longitude, setLongitude] = useState(6.9447613354683995);
     const [newMarkerAdress, setNewMarkerAdress] = useState('');
     const [newMarkerName, setNewMarkerName] = useState('');
+    const [newMarkerContact, setNewMarkerContact] = useState('');
+    const [newMarkerOpenTime, setNewMarkerOpenTime] = useState<Date | undefined>(undefined);
+    const [newMarkerCloseTime, setNewMarkerCloseTime] = useState<Date | undefined>(undefined);
 
     useEffect(() => {
         const buildMap = (tt: typeof import('@tomtom-international/web-sdk-maps')) => {
@@ -65,6 +69,29 @@ export function Map({ depots }: MapProps) {
             geocode(newMarkerAdress).then(({ lat, lng }) => {
                 new tt.Marker().setLngLat([lng, lat]).setPopup(new tt.Popup().setHTML(newMarkerName))
                     .addTo(map);
+                
+
+                fetch('/api/depot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: newMarkerName,
+                        coordinates: JSON.stringify({ lat, lng }),
+                        contact: newMarkerContact,
+                        openTime: newMarkerOpenTime || new Date(),
+                        closeTime: newMarkerCloseTime || new Date(),
+                    }),
+                }).then((response) => {
+                    if (response.ok) {
+                        console.log('Depot inserted successfully');
+                    } else {
+                        console.error('Error inserting depot');
+                    }
+                }).catch((error) => {
+                    console.error('Error inserting depot:', error);
+                });
             }).catch((error) => {
                 console.error('Error fetching geocode:', error);
             });
@@ -87,6 +114,25 @@ export function Map({ depots }: MapProps) {
                     placeholder="Address"
                     value={newMarkerAdress}
                     onChange={(e) => setNewMarkerAdress(e.target.value)}
+                    className="border p-2 mr-2"
+                />
+                <input
+                    type="text"
+                    placeholder="Contact"
+                    value={newMarkerContact}
+                    onChange={(e) => setNewMarkerContact(e.target.value)}
+                    className="border p-2 mr-2"
+                />
+                <input
+                    type="datetime-local"
+                    value={newMarkerOpenTime?.toISOString().slice(0, 16)}
+                    onChange={(e) => setNewMarkerOpenTime(new Date(e.target.value))}
+                    className="border p-2 mr-2"
+                />
+                <input
+                    type="datetime-local"
+                    value={newMarkerCloseTime?.toISOString().slice(0, 16)}
+                    onChange={(e) => setNewMarkerCloseTime(new Date(e.target.value))}
                     className="border p-2 mr-2"
                 />
                 

@@ -1,56 +1,97 @@
 'use client'
-import React from 'react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css'; // Re-uses images from ~leaflet package
-import L from 'leaflet';
-import 'leaflet-defaulticon-compatibility';
-import 'leaflet/dist/leaflet.css';
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { getDepotPoint, getDepotPointByRoundId, getRoundDepots } from "@/db";
-import 'leaflet-routing-machine';
-import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
-import RoutingMachine from "@/components/routing-machine";
+import { getDepotPoint } from "@/db";
 import { Depot } from "@/db/types/depot-point";
-import { Round } from "@/db/types/round";
+import tt from "@tomtom-international/web-sdk-maps";
+import { useEffect, useRef, useState } from "react";
+import { Card } from "@/components/ui/card";
 
 interface MapProps {
     depots: Depot[];
 }
 
+export function Map({ depots }: MapProps) {
+    const mapElement = useRef<HTMLDivElement>(null);
+    const [map, setMap] = useState<tt.Map | undefined>(undefined);
+    const [latitude, setLatitude] = useState(48.28761638007273);
+    const [longitude, setLongitude] = useState(6.9447613354683995);
+    const [newMarkerAdress, setNewMarkerAdress] = useState('');
+    const [newMarkerName, setNewMarkerName] = useState('');
 
-export function Map({ depots}: MapProps) {
-    
+    useEffect(() => {
+        const buildMap = (tt: typeof import('@tomtom-international/web-sdk-maps')) => {
+            let map = tt.map({
+                key: process.env.NEXT_PUBLIC_TOMTOM_API_KEY || '',
+                container: mapElement.current as unknown as HTMLElement,
+                center: [longitude, latitude],
+                zoom: 13,
+            });
+            depots.map((depot) => {
+                const coords = JSON.parse(depot.coordinates);
+                new tt.Marker().setLngLat([coords.lng, coords.lat]).setPopup(new tt.Popup().setHTML(depot.name))
+                    .addTo(map);
+            });
+            setMap(map);
+            console.log('mapLangage:', map.getLanguage());
+            return () => map.remove();
+        };
+
+        const initTomTom = async () => {
+            const tt = await import('@tomtom-international/web-sdk-maps');
+            buildMap(tt);
+        };
+
+        initTomTom();
+
+        return () => {
+            if (map) {
+                map.remove();
+            }
+        };
+    }, []);
+
+    const addMarker = () => {
+        if (map && newMarkerAdress) {
+            const geocode = async (address: string) => {
+                const response = await fetch(`https://api.tomtom.com/search/2/geocode/${encodeURIComponent(address)}.json?key=${process.env.NEXT_PUBLIC_TOMTOM_API_KEY}`);
+                const data = await response.json();
+                if (data.results && data.results.length > 0) {
+                    const { lat, lon } = data.results[0].position;
+                    return { lat, lng: lon };
+                } else {
+                    throw new Error('Address not found');
+                }
+            };
+
+            geocode(newMarkerAdress).then(({ lat, lng }) => {
+                new tt.Marker().setLngLat([lng, lat]).setPopup(new tt.Popup().setHTML(newMarkerName))
+                    .addTo(map);
+            }).catch((error) => {
+                console.error('Error fetching geocode:', error);
+            });
+        }
+    };
+
     return (
-        <Card className="h-[500px] w-[500px] p-5">
-            <MapContainer style={{height: '100%', width: '100%'}} center={[48.28753557547101, 6.942228242470202]} zoom={13} scrollWheelZoom={true}>
-                <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        <div className="flex flex-row gap-2">
+            <div className="border w-[500px] h-[700px]" id="theMap" ref={mapElement} />
+            <Card className="p-4 flex flex-col gap-2">
+                <input
+                    type="text"
+                    placeholder="Marker Name"
+                    value={newMarkerName}
+                    onChange={(e) => setNewMarkerName(e.target.value)}
+                    className="border p-2 mr-2"
                 />
-                <RoutingMachine depots={depots} />
-                {depots.map((depot) => {
-                    const coordinates = JSON.parse(depot.coordinates);
-                    return (
-                        <Marker position={[coordinates.lat, coordinates.lng]} key={depot.id}>
-                            <Popup>
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>{depot.name}</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <CardDescription>
-                                            <p>Contact: {depot.contact}</p>
-                                            <p>Open: {new Date(depot.openTime).toLocaleTimeString()}</p>
-                                            <p>Close: {new Date(depot.closeTime).toLocaleTimeString()}</p>
-                                        </CardDescription>
-                                    </CardContent>
-                                </Card>
-                            </Popup>
-                        </Marker>
-                    );
-                })}
-            </MapContainer>
-        </Card>
-    )
+                <input
+                    type="text"
+                    placeholder="Address"
+                    value={newMarkerAdress}
+                    onChange={(e) => setNewMarkerAdress(e.target.value)}
+                    className="border p-2 mr-2"
+                />
+                
+                <button onClick={addMarker} className="bg-blue-500 text-white p-2">Add Marker</button>
+            </Card>
+        </div>
+    );
 }

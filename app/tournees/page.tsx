@@ -1,7 +1,7 @@
 
 import { Map } from "@/components/map";
 import { Separator } from "@/components/ui/separator";
-import { getDepotPoint, getDepotPointByRoundId, getRound } from "@/db";
+import { getDepotPoint } from "@/db";
 import '@tomtom-international/web-sdk-maps/dist/maps.css';
 
 
@@ -11,7 +11,6 @@ export default async function Tournees() {
     
 
     const depots = await getDepotPoint();
-    const rounds = await getRound();
     
 
     return (

@@ -1,7 +1,7 @@
 import { DepotPointListTable } from "@/components/depot-point-list-table";
 import { RoundListTable } from "@/components/round-list-table";
 import { UserListTable } from "@/components/user-list-table";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getUser, getDepotPoint, getRound } from "@/db/index";

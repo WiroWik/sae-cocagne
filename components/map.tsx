@@ -21,7 +21,7 @@ export function Map({ depots }: MapProps) {
 
     useEffect(() => {
         const buildMap = (tt: typeof import('@tomtom-international/web-sdk-maps')) => {
-            let map = tt.map({
+            const map = tt.map({
                 key: process.env.NEXT_PUBLIC_TOMTOM_API_KEY || '',
                 container: mapElement.current as unknown as HTMLElement,
                 center: [longitude, latitude],

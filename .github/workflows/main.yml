@@ -29,7 +29,7 @@ jobs:
         run: npm install
       # 4. Linting
       - name: Linting
-        run: npm lint
+        run: npm run lint
 
       # 5. Construction de l'application Next.js
       - name: Build Next.js app

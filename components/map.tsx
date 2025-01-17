@@ -49,7 +49,7 @@ export function Map({ depots }: MapProps) {
                 map.remove();
             }
         };
-    }, []);
+    }, [depots, map]);
 
     const addMarker = () => {
         if (map && newMarkerAdress) {

@@ -1,10 +1,8 @@
 'use client'
-import { getDepotPoint } from "@/db";
 import { Depot } from "@/db/types/depot-point";
 import tt from "@tomtom-international/web-sdk-maps";
 import { useEffect, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
-import { insertDepot } from "@/db";
 
 interface MapProps {
     depots: Depot[];
@@ -13,8 +11,8 @@ interface MapProps {
 export function Map({ depots }: MapProps) {
     const mapElement = useRef<HTMLDivElement>(null);
     const [map, setMap] = useState<tt.Map | undefined>(undefined);
-    const [latitude, setLatitude] = useState(48.28761638007273);
-    const [longitude, setLongitude] = useState(6.9447613354683995);
+    const latitude = 48.28761638007273;
+    const longitude = 6.9447613354683995;
     const [newMarkerAdress, setNewMarkerAdress] = useState('');
     const [newMarkerName, setNewMarkerName] = useState('');
     const [newMarkerContact, setNewMarkerContact] = useState('');

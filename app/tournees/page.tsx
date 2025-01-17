@@ -1,8 +1,6 @@
 
 import { Map } from "@/components/map";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getDepotPoint, getDepotPointByRoundId, getRound } from "@/db";
 import '@tomtom-international/web-sdk-maps/dist/maps.css';
 

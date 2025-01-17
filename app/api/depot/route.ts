@@ -1,6 +1,4 @@
-
 import { getDepotPoint, insertDepot } from '@/db';
-import { Depot } from '@/db/types/depot-point';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {

@@ -7,7 +7,7 @@ export async function GET() {
 
         return NextResponse.json(depots);
     } catch (error) {
-        return { message: (error as any).message };
+        return { message: error };
     }
 }
 
@@ -26,6 +26,6 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({depot});
     } catch (error) {
-        return { message: (error as any).message };
+        return { message: error };
     }
 }

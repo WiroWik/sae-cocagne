@@ -71,18 +71,16 @@ export function Map({ depots }: MapProps) {
                     .addTo(map);
                 
 
+                const formData = new FormData();
+                formData.append('name', newMarkerName);
+                formData.append('coordinates', JSON.stringify({ lat, lng }));
+                formData.append('contact', newMarkerContact);
+                formData.append('openTime', (newMarkerOpenTime || new Date()).toISOString());
+                formData.append('closeTime', (newMarkerCloseTime || new Date()).toISOString());
+
                 fetch('/api/depot', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        name: newMarkerName,
-                        coordinates: JSON.stringify({ lat, lng }),
-                        contact: newMarkerContact,
-                        openTime: newMarkerOpenTime || new Date(),
-                        closeTime: newMarkerCloseTime || new Date(),
-                    }),
+                    body: formData,
                 }).then((response) => {
                     if (response.ok) {
                         console.log('Depot inserted successfully');

@@ -4,9 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getDepotPoint, getDepotPointByRoundId, getRound } from "@/db";
-import '@tomtom-international/web-sdk-maps/dist/maps.css'
-import tt from '@tomtom-international/web-sdk-maps';
-import dynamic from "next/dynamic";
+import '@tomtom-international/web-sdk-maps/dist/maps.css';
 
 
 
@@ -27,10 +25,6 @@ export default async function Tournees() {
             <div className="flex flex-row gap-2">
                 <Map depots={depots} />
             </div>
-
-
-
-            
         </>
     );
 }

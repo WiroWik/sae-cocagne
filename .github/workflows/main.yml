@@ -3,10 +3,10 @@ name: Next.js CI/CD Pipeline
 on:
   push:
     branches:
-      - main  # La branche principale pour les déploiements
+      - master  # La branche principale pour les déploiements
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
   build-and-deploy:

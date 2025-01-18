@@ -1,16 +1,29 @@
-
-import { Map } from "@/components/map";
+'use client'
 import { Separator } from "@/components/ui/separator";
-import { getDepotPoint } from "@/db";
+import { Depot } from "@/db/types/depot-point";
+import { Map } from "@/components/map";
 import '@tomtom-international/web-sdk-maps/dist/maps.css';
+import { useEffect, useState } from "react";
 
 
 
-export default async function Tournees() {
+export default function Tournees() {
 
-    
+    const [depots, setDepots] = useState<Depot[]>([]);
 
-    const depots = await getDepotPoint();
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await fetch('/api/depot', { method: 'GET' });
+            if (response.ok) {
+                const data = await response.json();
+                const depots: Depot[] = data as Depot[]
+                setDepots(depots);
+            } else {
+                console.error('Failed to fetch depots:', response.statusText);
+            }
+        };
+        fetchData();
+    }, []);
     
 
     return (
@@ -20,7 +33,8 @@ export default async function Tournees() {
             </h1>
             <Separator className="my-5" />
             <div className="flex flex-row gap-2">
-                <Map depots={depots} />
+                <Map depots={depots}/>
+                
             </div>
         </>
     );

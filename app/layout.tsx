@@ -4,6 +4,12 @@ import "./globals.css";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Separator } from "@/components/ui/separator";
+export const dynamicParams = true
+export const revalidate = 0
+export const fetchCache = 'auto'
+export const runtime = 'nodejs'
+export const preferredRegion = 'auto'
+export const maxDuration = 5
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

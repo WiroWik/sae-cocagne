@@ -1,17 +1,68 @@
 import { getDepotPoint, insertDepot } from '@/db';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET() {
+/**
+ * @swagger
+ * /api/depot:
+ *   get:
+ *     description: Renvoie les différents points de dépôt.
+ *     responses:
+ *       200:
+ *         description: Renvoie les différents points de dépôt
+ */
+export async function GET(): Promise<NextResponse> {
     try {
         const depots = await getDepotPoint();
 
         return NextResponse.json(depots);
     } catch (error) {
-        return { message: error };
+        return NextResponse.json({ message: error });
     }
 }
 
-export async function POST(req: NextRequest) {
+/**
+ * @swagger
+ * /api/depot:
+ *   post:
+ *     description: Insère un point de dépôt.
+ *     parameters:
+ *       - in: formData
+ *         name: name
+ *         required: true
+ *         description: Nom du point de dépôt
+ *         schema:
+ *           type: string
+ *       - in: formData
+ *         name: coordinates
+ *         required: true
+ *         description: Coordonnées du point de dépôt
+ *         schema:
+ *           type: string({'lat':longitude,'lng':latitude})
+ *       - in: formData
+ *         name: contact
+ *         required: true
+ *         description: Contact du point de dépôt
+ *         schema:
+ *           type: string
+ *       - in: formData
+ *         name: openTime
+ *         required: true
+ *         description: Heure d'ouverture du point de dépôt
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *       - in: formData
+ *         name: closeTime
+ *         required: true
+ *         description: Heure de fermeture du point de dépôt
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *     responses:
+ *       200:
+ *         description: Insère un point de dépôt dans la base de données
+ */
+export async function POST(req: NextRequest): Promise<NextResponse> {
     try {
         const data = await req.formData();
         const depot = {
@@ -26,6 +77,6 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({depot});
     } catch (error) {
-        return { message: error };
+        return NextResponse.json({ message: error });
     }
 }

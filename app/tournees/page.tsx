@@ -1,17 +1,19 @@
 'use client'
 import { Separator } from "@/components/ui/separator";
 import { Depot } from "@/db/types/depot-point";
-import { Map } from "@/components/map";
+// import { Map } from "@/components/map";
 import '@tomtom-international/web-sdk-maps/dist/maps.css';
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 
-
+const Map = dynamic(() => import('@/components/map').then(mod => mod.Map), { ssr: false });
 
 export default function Tournees() {
 
     const [depots, setDepots] = useState<Depot[]>([]);
 
     useEffect(() => {
+        console.log('test');
         const fetchData = async () => {
             const response = await fetch('/api/depot', { method: 'GET' });
             if (response.ok) {
@@ -34,7 +36,6 @@ export default function Tournees() {
             <Separator className="my-5" />
             <div className="flex flex-row gap-2">
                 <Map depots={depots}/>
-                
             </div>
         </>
     );

@@ -23,7 +23,7 @@ export function Map({ depots }: MapProps) {
         const buildMap = (tt: typeof import('@tomtom-international/web-sdk-maps')) => {
             const map = tt.map({
                 key: process.env.NEXT_PUBLIC_TOMTOM_API_KEY || '',
-                container: mapElement.current as unknown as HTMLElement,
+                container: "theMap",
                 center: [longitude, latitude],
                 zoom: 13,
             });
@@ -49,7 +49,7 @@ export function Map({ depots }: MapProps) {
                 map.remove();
             }
         };
-    }, [depots, map]);
+    }, []);
 
     const addMarker = () => {
         if (map && newMarkerAdress) {
@@ -96,7 +96,7 @@ export function Map({ depots }: MapProps) {
 
     return (
         <div className="flex flex-row gap-2">
-            <div className="border w-[500px] h-[700px]" id="theMap" ref={mapElement} />
+            <div className="border w-[500px] h-[700px]" id="theMap"/>
             <Card className="p-4 flex flex-col gap-2">
                 <input
                     type="text"

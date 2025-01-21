@@ -1,5 +1,5 @@
-import { getDepotPoint, getRound, insertDepot } from '@/db';
-import { NextRequest, NextResponse } from 'next/server';
+import { getRound } from '@/db';
+import { NextResponse } from 'next/server';
 
 /**
  * @swagger

@@ -5,16 +5,17 @@ import { Depot } from "@/db/types/depot-point";
 import '@tomtom-international/web-sdk-maps/dist/maps.css';
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import { Round } from "@/db/types/round";
 
 const Map = dynamic(() => import('@/components/map').then(mod => mod.Map), { ssr: false });
 
 export default function Tournees() {
 
     const [depots, setDepots] = useState<Depot[]>([]);
+    const [rounds, setRounds] = useState<Round[]>([]);
 
     useEffect(() => {
-        console.log('test');
-        const fetchData = async () => {
+        const fetchDepots = async () => {
             const response = await fetch('/api/depot', { method: 'GET' });
             if (response.ok) {
                 const data = await response.json();
@@ -24,7 +25,18 @@ export default function Tournees() {
                 console.error('Failed to fetch depots:', response.statusText);
             }
         };
-        fetchData();
+        fetchDepots();
+        const fetchRounds = async () => {
+            const response = await fetch('/api/round', { method: 'GET' });
+            if (response.ok) {
+                const data = await response.json();
+                const rounds: Round[] = data as Round[]
+                setRounds(rounds);
+            } else {
+                console.error('Failed to fetch rounds:', response.statusText);
+            }
+        };
+        fetchRounds();
     }, []);
     
 
@@ -35,7 +47,7 @@ export default function Tournees() {
             </h1>
             <Separator className="my-5" />
             <div className="flex flex-row gap-2">
-                <Map depots={depots}/>
+                <Map depots={depots} rounds={rounds}/>
             </div>
         </>
     );

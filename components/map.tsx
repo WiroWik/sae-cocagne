@@ -3,12 +3,16 @@ import { Depot } from "@/db/types/depot-point";
 import tt from "@tomtom-international/web-sdk-maps";
 import { useEffect, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
+import { Round } from "@/db/types/round";
+import ttservices from '@tomtom-international/web-sdk-services';
+import { waitUntilSymbol } from "next/dist/server/web/spec-extension/fetch-event";
 
 interface MapProps {
     depots: Depot[];
+    rounds: Round[];
 }
 
-export function Map({ depots }: MapProps) {
+export function Map({ depots, rounds }: MapProps) {
     const mapElement = useRef<HTMLDivElement>(null);
     const [map, setMap] = useState<tt.Map | undefined>(undefined);
     const latitude = 48.28761638007273;
@@ -18,12 +22,12 @@ export function Map({ depots }: MapProps) {
     const [newMarkerContact, setNewMarkerContact] = useState('');
     const [newMarkerOpenTime, setNewMarkerOpenTime] = useState<Date | undefined>(undefined);
     const [newMarkerCloseTime, setNewMarkerCloseTime] = useState<Date | undefined>(undefined);
-
+    
     useEffect(() => {
         const buildMap = (tt: typeof import('@tomtom-international/web-sdk-maps')) => {
             const map = tt.map({
                 key: process.env.NEXT_PUBLIC_TOMTOM_API_KEY || '',
-                container: "theMap",
+                container: mapElement.current || '',
                 center: [longitude, latitude],
                 zoom: 13,
             });
@@ -32,7 +36,13 @@ export function Map({ depots }: MapProps) {
                 new tt.Marker().setLngLat([coords.lng, coords.lat]).setPopup(new tt.Popup().setHTML(depot.name))
                     .addTo(map);
             });
+            console.log(depots);
+            console.log(rounds);
+            rounds.forEach((round) => {
+                addRouteForRound(round);
+            });
             setMap(map);
+            
             console.log('mapLangage:', map.getLanguage());
             return () => map.remove();
         };
@@ -94,9 +104,63 @@ export function Map({ depots }: MapProps) {
         }
     };
 
+    const addRouteForRound = async (round: Round) => {
+        try {
+            
+            const response = await fetch(`/api/round/depots?id=${round.id}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch depots');
+            }
+            const depots = await response.json();
+
+            
+
+            const waypoints = depots
+                .map((depot: Depot) => {
+                    const coords = JSON.parse(depot.coordinates); // Assuming depot.coordinates is a JSON string
+                    return `${coords.lng},${coords.lat}`; // Format as 'lng,lat'
+                })
+                .join(':');
+
+            console.log(waypoints);
+            
+            
+            ttservices.services.calculateRoute({
+                key: process.env.NEXT_PUBLIC_TOMTOM_API_KEY || '',
+                locations: waypoints,
+            })
+            .then((routeData) => {
+                const features = routeData.toGeoJson().features;
+                features.forEach((feature, index) => {
+                    if (map) {
+                        map.addLayer({
+                            id: "route" + index,
+                            type: "line",
+                            source: {
+                            type: "geojson",
+                            data: feature,
+                            },
+                            paint: {
+                            "line-color": `red`,
+                            "line-opacity": 0.8,
+                            "line-width": 6,
+                            "line-dasharray": [1, 0, 1, 0],
+                            }
+                        });
+                    }
+                });
+            });
+            
+
+        
+        } catch (error) {
+            console.error('Error adding route for round:', error);
+        }
+    };
+
     return (
         <div className="flex flex-row gap-2">
-            <div className="border w-[500px] h-[700px]" id="theMap"/>
+            <div className="border w-[500px] h-[700px]" id="theMap" ref={mapElement}/>
             <Card className="p-4 flex flex-col gap-2">
                 <input
                     type="text"

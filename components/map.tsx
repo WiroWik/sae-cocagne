@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Round } from "@/db/types/round";
 import ttservices from '@tomtom-international/web-sdk-services';
-import { waitUntilSymbol } from "next/dist/server/web/spec-extension/fetch-event";
 
 interface MapProps {
     depots: Depot[];

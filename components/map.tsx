@@ -13,6 +13,7 @@ interface MapProps {
 
 export function Map({ depots, rounds }: MapProps) {
     const mapElement = useRef<HTMLDivElement>(null);
+    const initialized = useRef(false);
     const [map, setMap] = useState<tt.Map | undefined>(undefined);
     const latitude = 48.28761638007273;
     const longitude = 6.9447613354683995;
@@ -23,41 +24,45 @@ export function Map({ depots, rounds }: MapProps) {
     const [newMarkerCloseTime, setNewMarkerCloseTime] = useState<Date | undefined>(undefined);
     
     useEffect(() => {
-        const buildMap = (tt: typeof import('@tomtom-international/web-sdk-maps')) => {
-            const map = tt.map({
-                key: process.env.NEXT_PUBLIC_TOMTOM_API_KEY || '',
-                container: mapElement.current || '',
-                center: [longitude, latitude],
-                zoom: 13,
-            });
-            depots.map((depot) => {
-                const coords = JSON.parse(depot.coordinates);
-                new tt.Marker().setLngLat([coords.lng, coords.lat]).setPopup(new tt.Popup().setHTML(depot.name))
-                    .addTo(map);
-            });
-            console.log(depots);
-            console.log(rounds);
-            rounds.forEach((round) => {
-                addRouteForRound(round);
-            });
-            setMap(map);
-            
-            console.log('mapLangage:', map.getLanguage());
-            return () => map.remove();
-        };
+        if (!initialized.current) {
+            initialized.current = true;
+            const buildMap = (tt: typeof import('@tomtom-international/web-sdk-maps')) => {
+                const map = tt.map({
+                    key: process.env.NEXT_PUBLIC_TOMTOM_API_KEY || '',
+                    container: mapElement.current || '',
+                    center: [longitude, latitude],
+                    zoom: 13,
+                });
+                depots.map((depot) => {
+                    const coords = JSON.parse(depot.coordinates);
+                    new tt.Marker().setLngLat([coords.lng, coords.lat]).setPopup(new tt.Popup().setHTML(depot.name))
+                        .addTo(map);
+                });
+                console.log(depots);
+                console.log(rounds);
+                
+                rounds.forEach((round) => {
+                    addRouteForRound(round, map);
+                });
+                setMap(map);
+                
+                console.log('mapLangage:', map.getLanguage());
+                return () => {map.remove()};
+            };
 
-        const initTomTom = async () => {
-            const tt = await import('@tomtom-international/web-sdk-maps');
-            buildMap(tt);
-        };
+            const initTomTom = async () => {
+                const tt = await import('@tomtom-international/web-sdk-maps');
+                buildMap(tt);
+            };
 
-        initTomTom();
+            initTomTom();
 
-        return () => {
-            if (map) {
-                map.remove();
-            }
-        };
+            return () => {
+                if (map) {
+                    map.remove();
+                }
+            };
+        }
     }, []);
 
     const addMarker = () => {
@@ -103,16 +108,13 @@ export function Map({ depots, rounds }: MapProps) {
         }
     };
 
-    const addRouteForRound = async (round: Round) => {
+    const addRouteForRound = async (round: Round, map: tt.Map) => {
         try {
-            
             const response = await fetch(`/api/round/depots?id=${round.id}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch depots');
             }
             const depots = await response.json();
-
-            
 
             const waypoints = depots
                 .map((depot: Depot) => {
@@ -123,29 +125,31 @@ export function Map({ depots, rounds }: MapProps) {
 
             console.log(waypoints);
             
-            
             ttservices.services.calculateRoute({
                 key: process.env.NEXT_PUBLIC_TOMTOM_API_KEY || '',
                 locations: waypoints,
             })
             .then((routeData) => {
                 const features = routeData.toGeoJson().features;
+                console.log(features);
                 features.forEach((feature, index) => {
                     if (map) {
+                        console.log("route" + round.id);
                         map.addLayer({
-                            id: "route" + index,
+                            id: "route" + round.id,
                             type: "line",
                             source: {
                             type: "geojson",
                             data: feature,
                             },
                             paint: {
-                            "line-color": `red`,
-                            "line-opacity": 0.8,
-                            "line-width": 6,
-                            "line-dasharray": [1, 0, 1, 0],
+                                "line-color": getRandomHexColor(),
+                                "line-opacity": 0.8,
+                                "line-width": 6,
                             }
                         });
+                    } else {
+                        console.log("map: "+map);
                     }
                 });
             });
@@ -156,6 +160,12 @@ export function Map({ depots, rounds }: MapProps) {
             console.error('Error adding route for round:', error);
         }
     };
+
+    function getRandomHexColor(): string {
+        const randomInt = Math.floor(Math.random() * 0xffffff); 
+        const hexColor = `#${randomInt.toString(16).padStart(6, '0')}`;
+        return hexColor;
+    }
 
     return (
         <div className="flex flex-row gap-2">

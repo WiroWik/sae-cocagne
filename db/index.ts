@@ -54,3 +54,11 @@ export function insertDepot(depot: typeof depotPointsTable.$inferInsert) {
   return db.insert(depotPointsTable).values(depot);
 }
 
+export function insertRound(round: typeof roundsTable.$inferInsert) {
+  return db.insert(roundsTable).values(round);
+}
+
+export function insertRoundDepot(roundDepot: typeof roundDepotsTable.$inferInsert) {
+  return db.insert(roundDepotsTable).values(roundDepot);
+}
+

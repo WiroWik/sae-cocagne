@@ -2,46 +2,47 @@ import { ChangeEvent, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Depot } from "@/db/types/depot-point";
 import { Plus } from "lucide-react";
+import { on } from "events";
+
 
 interface RoundInputProps {
-    depots : Depot[];
+  depots: Depot[];
+  onDepotsChange: (newDepots: Depot[] | undefined) => void;
+
 }
 
-export default function DynamicRoundInputFields({ depots } : RoundInputProps) {
-  const [items, setItems] = useState<Partial<Depot>[]>([
-    { id: 1, name: "", coordinates: "", contact: "", openTime: new Date(), closeTime: new Date() },
-  ]);
 
-  // Handle dynamic input change
-  const handleChange = (index: number, field: keyof Depot, value: string | Date) => {
-    setItems((prevItems) => {
-      const updatedItems = [...(prevItems || [])];
-      updatedItems[index] = { ...updatedItems[index], [field]: value };
-      return updatedItems;
-    });
+
+export default function DynamicRoundInputFields({ depots, onDepotsChange } : RoundInputProps) {
+  const [selectedDepots, setSelectedDepots] = useState<Depot[]>([{} as Depot]);
+
+  const handleDepotChange = (index: number, depotId: string) => {
+    const depot = depots.find(d => d.id === Number(depotId));
+    if (depot) {
+      const newSelectedDepots = [...selectedDepots];
+      newSelectedDepots[index] = depot;
+      setSelectedDepots(newSelectedDepots);
+      console.log(newSelectedDepots);
+      onDepotsChange(newSelectedDepots);
+    }
+    
+    
   };
 
-  // Add a new depot input
-  const addDepotField = () => {
-    setItems((prevItems) => [
-      ...(prevItems || []),
-      { id: Date.now(), name: "", coordinates: "", contact: "", openTime: new Date(), closeTime: new Date() },
-    ]);
+  const handleAddSelect = () => {
+    setSelectedDepots([...selectedDepots, {} as Depot]);
   };
 
   return (
-    <div className="space-y-4">
-      {items.map((item, index) => (
-        <div key={item.id} className="space-y-2">
-          <Select
-            onValueChange={(value) => handleChange(index, "name", value)}
-            value={item.name || ""}
-          >
-            <SelectTrigger className="w-full border p-2">
+    <div>
+      {selectedDepots.map((selectedDepot, index) => (
+        <div key={index}>
+          <Select onValueChange={(value) => handleDepotChange(index, value)}>
+            <SelectTrigger>
               <SelectValue placeholder="Select a depot" />
             </SelectTrigger>
             <SelectContent>
-              {depots.map((depot) => (
+              {depots.map(depot => (
                 <SelectItem key={depot.id} value={depot.id.toString()}>
                   {depot.name}
                 </SelectItem>
@@ -50,13 +51,10 @@ export default function DynamicRoundInputFields({ depots } : RoundInputProps) {
           </Select>
         </div>
       ))}
-
-      <button
-        onClick={addDepotField}
-        className="flex items-center space-x-2 p-2 bg-blue-500 text-white rounded"
-      >
-        <Plus/>
+      <button onClick={handleAddSelect}>
+        Add Depot
       </button>
     </div>
   );
+  
 }

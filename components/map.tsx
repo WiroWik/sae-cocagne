@@ -11,6 +11,7 @@ import { Plus } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import DynamicRoundInputFields from "@/components/dynamic-depot-round-input";
 import { Calendar } from "@/components/ui/calendar";
+import { revalidatePath } from "next/cache";
 
 interface MapProps {
     depots: Depot[];
@@ -107,6 +108,7 @@ export function Map({ depots, rounds }: MapProps) {
                 }).then((response) => {
                     if (response.ok) {
                         console.log('Depot inserted successfully');
+                        window.location.reload();
                     } else {
                         console.error('Error inserting depot');
                     }
@@ -120,7 +122,25 @@ export function Map({ depots, rounds }: MapProps) {
     };
 
     const addRound = () => {
-        console.log(newRoundPreparationDay);
+        console.log("depots dans mon cul : " + newRoundDepots);
+        const formData = new FormData();
+        formData.append('preparationDay', newRoundPreparationDay ? new Date(newRoundPreparationDay).toISOString() : new Date().toISOString());
+        formData.append('deliveryDay', newRoundDeliveryDay ? new Date(newRoundDeliveryDay).toISOString() : new Date().toISOString());
+        formData.append('depots', JSON.stringify(newRoundDepots));
+        
+        fetch('/api/round', {
+            method: 'POST',
+            body: formData,
+        }).then((response) => {
+            if (response.ok) {
+                console.log('Round inserted successfully');
+                window.location.reload();
+            } else {
+                console.error('Error inserting round');
+            }
+        }).catch((error) => {
+            console.error('Error inserting round:', error);
+        });
     };
 
     const displayRouteForRound = async (round: Round, map: tt.Map) => {
@@ -253,20 +273,29 @@ export function Map({ depots, rounds }: MapProps) {
                     <CardTitle>Ajout d'une tournée</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-2">
-                    <Label>Jour de préparation</Label>
-                    <Calendar
-                        mode="single"
-                        selected={newRoundPreparationDay}
-                        onSelect={setNewRoundPreparationDay}
-                        className="rounded-md border"
-                    />
-                    <Label>Jour de livraison</Label>
-                    <Calendar
-                        mode="single"
-                        selected={newRoundDeliveryDay}
-                        onSelect={setNewRoundDeliveryDay}
-                        className="rounded-md border"
-                    />
+                    <div className="flex flex-row gap-2">
+                        <div className="flex flex-col gap-2">
+                            <Label>Jour de préparation</Label>
+                            <Calendar
+                                mode="single"
+                                selected={newRoundPreparationDay}
+                                onSelect={setNewRoundPreparationDay}
+                                className="rounded-md border"
+                            />
+                            <Label>Jour de livraison</Label>
+                            <Calendar
+                                mode="single"
+                                selected={newRoundDeliveryDay}
+                                onSelect={setNewRoundDeliveryDay}
+                                className="rounded-md border"
+                            />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <Label>Dépôts</Label>
+                            <DynamicRoundInputFields depots={depots} onDepotsChange={setNewRoundDepots} />
+                        </div>
+                    </div>
+                    
                     
                     <Button onClick={addRound}><Plus/> Ajouter</Button>
                 </CardContent>

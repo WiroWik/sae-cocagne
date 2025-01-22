@@ -7,23 +7,16 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 moment.locale('fr-FR');
 const localizer = momentLocalizer(moment);
 
-const events = [
-    {
-        title: 'Preparation Day',
-        start: new Date(2023, 10, 10),
-        end: new Date(2023, 10, 10),
-    },
-    {
-        title: 'Delivery Day',
-        start: new Date(2023, 10, 11),
-        end: new Date(2023, 10, 11),
-    },
-];
+import { useEffect } from 'react';
+import { Round } from '@/db/types/round';
+
+
+
 
 
 export default function ReactCalendar() {
-    const [myEvents, setMyEvents] = useState(events);
     const [view, setView] = useState<View>(Views.MONTH)
+    const [events, setEvents] = useState<{ title: string; start: Date; end: Date; }[]>([]);
 
     const handleOnChangeView = (selectedView: View) => {
         setView(selectedView)
@@ -37,6 +30,35 @@ export default function ReactCalendar() {
         [setDate]
     )
 
+    
+
+    const fetchRounds = async () => {
+        const response = await fetch('/api/round', { method: 'GET' });
+        if (response.ok) {
+            const data = await response.json();
+            const rounds: Round[] = data as Round[];
+            const events = rounds.flatMap(round => [
+                {
+                    title: "Jour de préparation | Tournée n°" + round.id,
+                    start: new Date(round.preparationDay),
+                    end: new Date(round.preparationDay),
+                },
+                {
+                    title: "Jour de livraison | Tournée n°" + round.id,
+                    start: new Date(round.deliveryDay),
+                    end: new Date(round.deliveryDay),
+                }
+            ]);
+            setEvents(events);
+        } else {
+            console.error('Failed to fetch depots:', response.statusText);
+        }
+    };
+
+    useEffect(() => {
+        fetchRounds();
+    }, []);
+
     return (
         <>
             <Calendar
@@ -46,7 +68,7 @@ export default function ReactCalendar() {
                 toolbar={true}
                 popup={true}
                 localizer={localizer}
-                events={myEvents}
+                events={events}
                 step={60} 
                 startAccessor="start"
                 endAccessor="end"

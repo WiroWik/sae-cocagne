@@ -203,9 +203,9 @@ export function Map({ depots, rounds }: MapProps) {
     }
 
     return (
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row gap-2 max-h-['100%']">
             
-            <div className="border w-[500px] h-[700px]" id="theMap" ref={mapElement}/>
+            <div className="border w-[800px] h-100" id="theMap" ref={mapElement}/>
             <Card className="p-4 flex flex-col gap-2">
                 <CardHeader>
                     <CardTitle>Ajout d'un point de dépôt</CardTitle>
@@ -268,7 +268,7 @@ export function Map({ depots, rounds }: MapProps) {
                     <Button onClick={addMarker}><Plus/> Ajouter</Button>
                 </CardContent>
             </Card>
-            <Card className="p-4 flex flex-col gap-2">
+            <Card className="p-4 flex flex-col gap-2 w-[800px]">
                 <CardHeader>
                     <CardTitle>Ajout d'une tournée</CardTitle>
                 </CardHeader>

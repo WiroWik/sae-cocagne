@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Depot } from "@/db/types/depot-point";
 import { Plus } from "lucide-react";
-import { on } from "events";
+import { Button } from "@/components/ui/button";
 
 
 interface RoundInputProps {
@@ -25,8 +25,6 @@ export default function DynamicRoundInputFields({ depots, onDepotsChange } : Rou
       console.log(newSelectedDepots);
       onDepotsChange(newSelectedDepots);
     }
-    
-    
   };
 
   const handleAddSelect = () => {
@@ -34,7 +32,7 @@ export default function DynamicRoundInputFields({ depots, onDepotsChange } : Rou
   };
 
   return (
-    <div>
+    <div className="flex flex-col gap-2">
       {selectedDepots.map((selectedDepot, index) => (
         <div key={index}>
           <Select onValueChange={(value) => handleDepotChange(index, value)}>
@@ -51,9 +49,9 @@ export default function DynamicRoundInputFields({ depots, onDepotsChange } : Rou
           </Select>
         </div>
       ))}
-      <button onClick={handleAddSelect}>
-        Add Depot
-      </button>
+      <Button onClick={handleAddSelect}>
+        <Plus size={24} />
+      </Button>
     </div>
   );
   

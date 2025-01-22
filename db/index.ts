@@ -35,7 +35,8 @@ export async function getDepotPointByRoundId(id: number) : Promise<Depot[]> {
     })
     .from(depotPointsTable)
     .innerJoin(roundDepotsTable, eq(depotPointsTable.id, roundDepotsTable.depotId))
-    .where(eq(roundDepotsTable.roundId, id));
+    .where(eq(roundDepotsTable.roundId, id))
+    .orderBy(roundDepotsTable.order);
   return result;
 }
 

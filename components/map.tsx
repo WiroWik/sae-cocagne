@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import DynamicRoundInputFields from "@/components/dynamic-depot-round-input";
+import { Calendar } from "@/components/ui/calendar";
 
 interface MapProps {
     depots: Depot[];
@@ -25,11 +26,11 @@ export function Map({ depots, rounds }: MapProps) {
     const [newMarkerAdress, setNewMarkerAdress] = useState('');
     const [newMarkerName, setNewMarkerName] = useState('');
     const [newMarkerContact, setNewMarkerContact] = useState('');
-    const [newMarkerOpenTime, setNewMarkerOpenTime] = useState<Date | undefined>(undefined);
-    const [newMarkerCloseTime, setNewMarkerCloseTime] = useState<Date | undefined>(undefined);
-    const [newRoundPreparationDay, setNewRoundPreparationDay] = useState<Date | undefined>(undefined)
-    const [newRoundDeliveryDay, setNewRoundDeliveryDay] = useState<Date | undefined>(undefined)
-    const [newRoundDepots, setNewRoundDepots] = useState<Depot[] | undefined>(undefined)
+    const [newMarkerOpenTime, setNewMarkerOpenTime] = useState<Date | undefined>(new Date());
+    const [newMarkerCloseTime, setNewMarkerCloseTime] = useState<Date | undefined>(new Date());
+    const [newRoundPreparationDay, setNewRoundPreparationDay] = useState<Date | undefined>(undefined);
+    const [newRoundDeliveryDay, setNewRoundDeliveryDay] = useState<Date | undefined>(undefined);
+    const [newRoundDepots, setNewRoundDepots] = useState<Depot[] | undefined>(undefined);
     
     useEffect(() => {
         if (!initialized.current && mapElement.current) {
@@ -90,14 +91,15 @@ export function Map({ depots, rounds }: MapProps) {
             geocode(newMarkerAdress).then(({ lat, lng }) => {
                 new tt.Marker().setLngLat([lng, lat]).setPopup(new tt.Popup().setHTML(newMarkerName))
                     .addTo(map);
-                
-
+ 
                 const formData = new FormData();
                 formData.append('name', newMarkerName);
                 formData.append('coordinates', JSON.stringify({ lat, lng }));
                 formData.append('contact', newMarkerContact);
-                formData.append('openTime', (newMarkerOpenTime || new Date()).toISOString());
-                formData.append('closeTime', (newMarkerCloseTime || new Date()).toISOString());
+                const winterTimeOffset = 60 * 60 * 1000; // 1 hour in milliseconds
+                formData.append('openTime', newMarkerOpenTime ? new Date(newMarkerOpenTime.getTime() + winterTimeOffset).toISOString() : new Date().toISOString());
+                formData.append('closeTime', newMarkerCloseTime ? new Date(newMarkerCloseTime.getTime() + winterTimeOffset).toISOString() : new Date().toISOString());
+                // Oui bah on triche voilà
 
                 fetch('/api/depot', {
                     method: 'POST',
@@ -118,7 +120,7 @@ export function Map({ depots, rounds }: MapProps) {
     };
 
     const addRound = () => {
-        console.log(newRoundDeliveryDay);
+        console.log(newRoundPreparationDay);
     };
 
     const displayRouteForRound = async (round: Round, map: tt.Map) => {
@@ -218,22 +220,31 @@ export function Map({ depots, rounds }: MapProps) {
 
                     <Label>Heure d'ouverture</Label>
                     <Input
-                        
-                        type="datetime-local"
-                        value={newMarkerOpenTime?.toISOString().slice(0, 16)}
-                        onChange={(e) => setNewMarkerOpenTime(new Date(e.target.value))}
+                        type="time"
+                        value={newMarkerOpenTime ? newMarkerOpenTime.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : ''}
+                        onChange={(e) => {
+                            const [hours, minutes] = e.target.value.split(':');
+                            const updatedDate = new Date(newMarkerCloseTime || new Date());
+                            updatedDate.setHours(parseInt(hours, 10));
+                            updatedDate.setMinutes(parseInt(minutes, 10));
+                            setNewMarkerOpenTime(updatedDate);
+                        }}
                         className="border p-2 mr-2"
                     />
                     
                     <Label>Heure de fermeture</Label>
                     <Input
-                        
-                        type="datetime-local"
-                        value={newMarkerCloseTime?.toISOString().slice(0, 16)}
-                        onChange={(e) => setNewMarkerCloseTime(new Date(e.target.value))}
+                        type="time"
+                        value={newMarkerCloseTime ? newMarkerCloseTime.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : ''}
+                        onChange={(e) => {
+                            const [hours, minutes] = e.target.value.split(':');
+                            const updatedDate = new Date(newMarkerCloseTime || new Date());
+                            updatedDate.setHours(parseInt(hours, 10));
+                            updatedDate.setMinutes(parseInt(minutes, 10));
+                            setNewMarkerCloseTime(updatedDate);
+                        }}
                         className="border p-2 mr-2"
                     />
-                    
                     <Button onClick={addMarker}><Plus/> Ajouter</Button>
                 </CardContent>
             </Card>
@@ -242,19 +253,21 @@ export function Map({ depots, rounds }: MapProps) {
                     <CardTitle>Ajout d'une tournée</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-2">
-                    <Input
-                        type="datetime-local"
-                        value={newRoundPreparationDay?.toISOString().slice(0, 16)}
-                        onChange={(e) => setNewRoundPreparationDay(new Date(e.target.value))}
-                        className="border p-2 mr-2"
+                    <Label>Jour de préparation</Label>
+                    <Calendar
+                        mode="single"
+                        selected={newRoundPreparationDay}
+                        onSelect={setNewRoundPreparationDay}
+                        className="rounded-md border"
                     />
-                    <Input
-                        type="datetime-local"
-                        value={newRoundDeliveryDay?.toISOString().slice(0, 16)}
-                        onChange={(e) => setNewRoundDeliveryDay(new Date(e.target.value))}
-                        className="border p-2 mr-2"
+                    <Label>Jour de livraison</Label>
+                    <Calendar
+                        mode="single"
+                        selected={newRoundDeliveryDay}
+                        onSelect={setNewRoundDeliveryDay}
+                        className="rounded-md border"
                     />
-                    <DynamicRoundInputFields depots={depots}/>
+                    
                     <Button onClick={addRound}><Plus/> Ajouter</Button>
                 </CardContent>
             </Card>

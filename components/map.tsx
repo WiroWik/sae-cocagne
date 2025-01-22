@@ -2,9 +2,14 @@
 import { Depot } from "@/db/types/depot-point";
 import tt from "@tomtom-international/web-sdk-maps";
 import { useEffect, useRef, useState } from "react";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Round } from "@/db/types/round";
 import ttservices from '@tomtom-international/web-sdk-services';
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import DynamicRoundInputFields from "@/components/dynamic-depot-round-input";
 
 interface MapProps {
     depots: Depot[];
@@ -22,9 +27,13 @@ export function Map({ depots, rounds }: MapProps) {
     const [newMarkerContact, setNewMarkerContact] = useState('');
     const [newMarkerOpenTime, setNewMarkerOpenTime] = useState<Date | undefined>(undefined);
     const [newMarkerCloseTime, setNewMarkerCloseTime] = useState<Date | undefined>(undefined);
+    const [newRoundPreparationDay, setNewRoundPreparationDay] = useState<Date | undefined>(undefined)
+    const [newRoundDeliveryDay, setNewRoundDeliveryDay] = useState<Date | undefined>(undefined)
+    const [newRoundDepots, setNewRoundDepots] = useState<Depot[] | undefined>(undefined)
     
     useEffect(() => {
-        if (!initialized.current) {
+        if (!initialized.current && mapElement.current) {
+            console.log("loaded");
             initialized.current = true;
             const buildMap = (tt: typeof import('@tomtom-international/web-sdk-maps')) => {
                 const map = tt.map({
@@ -42,7 +51,7 @@ export function Map({ depots, rounds }: MapProps) {
                 console.log(rounds);
                 
                 rounds.forEach((round) => {
-                    addRouteForRound(round, map);
+                    displayRouteForRound(round, map);
                 });
                 setMap(map);
                 
@@ -63,7 +72,7 @@ export function Map({ depots, rounds }: MapProps) {
                 }
             };
         }
-    }, []);
+    }, [mapElement.current]);
 
     const addMarker = () => {
         if (map && newMarkerAdress) {
@@ -108,7 +117,11 @@ export function Map({ depots, rounds }: MapProps) {
         }
     };
 
-    const addRouteForRound = async (round: Round, map: tt.Map) => {
+    const addRound = () => {
+        console.log(newRoundDeliveryDay);
+    };
+
+    const displayRouteForRound = async (round: Round, map: tt.Map) => {
         try {
             const response = await fetch(`/api/round/depots?id=${round.id}`);
             if (!response.ok) {
@@ -169,44 +182,83 @@ export function Map({ depots, rounds }: MapProps) {
 
     return (
         <div className="flex flex-row gap-2">
+            
             <div className="border w-[500px] h-[700px]" id="theMap" ref={mapElement}/>
             <Card className="p-4 flex flex-col gap-2">
-                <input
-                    type="text"
-                    placeholder="Marker Name"
-                    value={newMarkerName}
-                    onChange={(e) => setNewMarkerName(e.target.value)}
-                    className="border p-2 mr-2"
-                />
-                <input
-                    type="text"
-                    placeholder="Address"
-                    value={newMarkerAdress}
-                    onChange={(e) => setNewMarkerAdress(e.target.value)}
-                    className="border p-2 mr-2"
-                />
-                <input
-                    type="text"
-                    placeholder="Contact"
-                    value={newMarkerContact}
-                    onChange={(e) => setNewMarkerContact(e.target.value)}
-                    className="border p-2 mr-2"
-                />
-                <input
-                    type="datetime-local"
-                    value={newMarkerOpenTime?.toISOString().slice(0, 16)}
-                    onChange={(e) => setNewMarkerOpenTime(new Date(e.target.value))}
-                    className="border p-2 mr-2"
-                />
-                <input
-                    type="datetime-local"
-                    value={newMarkerCloseTime?.toISOString().slice(0, 16)}
-                    onChange={(e) => setNewMarkerCloseTime(new Date(e.target.value))}
-                    className="border p-2 mr-2"
-                />
-                
-                <button onClick={addMarker} className="bg-blue-500 text-white p-2">Add Marker</button>
+                <CardHeader>
+                    <CardTitle>Ajout d'un point de dépôt</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-2">
+                    <Label>Nom du point de dépôt</Label>
+                    <Input
+                        type="text"
+                        placeholder="Nom"
+                        value={newMarkerName}
+                        onChange={(e) => setNewMarkerName(e.target.value)}
+                        className="border p-2 mr-2"
+                    />
+
+                    <Label>Adresse du point de dépôt</Label>
+                    <Input
+                        type="text"
+                        placeholder="Adresse"
+                        value={newMarkerAdress}
+                        onChange={(e) => setNewMarkerAdress(e.target.value)}
+                        className="border p-2 mr-2"
+                    />
+
+                    <Label>Informations de contact</Label>
+                    <Input
+                        type="text"
+                        placeholder="Contact"
+                        value={newMarkerContact}
+                        onChange={(e) => setNewMarkerContact(e.target.value)}
+                        className="border p-2 mr-2"
+                    />
+
+                    <Label>Heure d'ouverture</Label>
+                    <Input
+                        
+                        type="datetime-local"
+                        value={newMarkerOpenTime?.toISOString().slice(0, 16)}
+                        onChange={(e) => setNewMarkerOpenTime(new Date(e.target.value))}
+                        className="border p-2 mr-2"
+                    />
+                    
+                    <Label>Heure de fermeture</Label>
+                    <Input
+                        
+                        type="datetime-local"
+                        value={newMarkerCloseTime?.toISOString().slice(0, 16)}
+                        onChange={(e) => setNewMarkerCloseTime(new Date(e.target.value))}
+                        className="border p-2 mr-2"
+                    />
+                    
+                    <Button onClick={addMarker}><Plus/> Ajouter</Button>
+                </CardContent>
             </Card>
+            <Card className="p-4 flex flex-col gap-2">
+                <CardHeader>
+                    <CardTitle>Ajout d'une tournée</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-2">
+                    <Input
+                        type="datetime-local"
+                        value={newRoundPreparationDay?.toISOString().slice(0, 16)}
+                        onChange={(e) => setNewRoundPreparationDay(new Date(e.target.value))}
+                        className="border p-2 mr-2"
+                    />
+                    <Input
+                        type="datetime-local"
+                        value={newRoundDeliveryDay?.toISOString().slice(0, 16)}
+                        onChange={(e) => setNewRoundDeliveryDay(new Date(e.target.value))}
+                        className="border p-2 mr-2"
+                    />
+                    <DynamicRoundInputFields depots={depots}/>
+                    <Button onClick={addRound}><Plus/> Ajouter</Button>
+                </CardContent>
+            </Card>
+
         </div>
     );
 }

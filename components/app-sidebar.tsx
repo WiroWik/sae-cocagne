@@ -13,7 +13,7 @@ import {
 import Image from "next/image"
 import logoCocagne from "@/public/images/cocagne-vert.png"
 import { Separator } from "@/components/ui/separator"
-import { Truck, Calendar, BookOpen} from "lucide-react"
+import { Truck, Calendar, BookOpen, LeafyGreen } from "lucide-react"
 import Link from "next/link"
 
 export function AppSidebar() {
@@ -32,6 +32,11 @@ export function AppSidebar() {
             title: "Documentation de l'API",
             url: "/api-doc",
             icon: BookOpen
+        },
+        {
+            title: "Abonnements",
+            url: "/abonnements",
+            icon: LeafyGreen
         }
     ]
     return (

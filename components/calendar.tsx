@@ -72,7 +72,7 @@ export default function ReactCalendar() {
                 step={60} 
                 startAccessor="start"
                 endAccessor="end"
-                style={{ height: 500, margin: '50px' }}
+                style={{ height: 700, margin: '50px' }}
                 onView={handleOnChangeView}
                 onNavigate={onNavigate}
                 date={date}
